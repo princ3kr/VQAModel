@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.Python
+env/
+venv/
+.env
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# IDE
+.idea/
+
+# Dataset (large files - download separately)
+dataset/
+data/raw/
+data/processed/
+
+# Model Checkpoints (large files)
+checkpoints/*.pth
+checkpoints/*.pt
+*.pth
+*.pt
+
+# Keep checkpoints folder but ignore model files
+!checkpoints/.gitkeep
+
+# Logs
+logs/
+runs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
