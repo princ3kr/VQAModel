@@ -22,12 +22,6 @@ dataset/
 data/raw/
 data/processed/
 
-# Model Checkpoints (large files)
-checkpoints/*.pth
-checkpoints/*.pt
-*.pth
-*.pt
-
 # Keep checkpoints folder but ignore model files
 !checkpoints/.gitkeep
 
