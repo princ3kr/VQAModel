@@ -56,8 +56,6 @@ def ques_preprocessing(question, tokenizer):
     attention_mask = ques['attention_mask']
     return input_ids, attention_mask
 
-
-
 def main():
     st.title("VQA Model")
     st.write("This is a VQA model that can answer questions about images.")
