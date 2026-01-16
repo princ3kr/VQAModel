@@ -8,8 +8,13 @@ import streamlit as st
 import yaml
 import json
 import PIL.Image as Image
+from huggingface_hub import hf_hub_download
 
 from models.vqa_model import VQAModel
+
+# Hugging Face model repository - update this with your repo
+HF_REPO_ID = "princ3kr/vqa-model"
+MODEL_FILENAME = "best_model.pth"
 
 @st.cache_data
 def load_config(config_path):
@@ -25,7 +30,14 @@ def load_vocab(vocab_path):
     return idx_to_ans
 
 @st.cache_resource
-def load_model(model_path, config):
+def download_model_from_hf():
+    """Download model from Hugging Face Hub"""
+    model_path = hf_hub_download(repo_id=HF_REPO_ID, filename=MODEL_FILENAME)
+    return model_path
+
+@st.cache_resource
+def load_model(config):
+    model_path = download_model_from_hf()
     model = VQAModel(config['model'])
     model.load_state_dict(torch.load(model_path, map_location='cpu', weights_only=True))
 
@@ -61,8 +73,7 @@ def main():
     st.write("This is a VQA model that can answer questions about images.")
 
     config = load_config('configs/default_config.yaml')
-    model_path = config['training']['save_dir'] + 'best_model.pth'
-    model, device = load_model(model_path, config)
+    model, device = load_model(config)
     idx_to_ans = load_vocab(config['data']['answer_vocab_path'])
     tokenizer = load_tokenizer(config['model']['text_encoder']['model_name'])
 
