@@ -21,6 +21,10 @@ venv/
 dataset/
 data/raw/
 data/processed/
+*.pth
+*.pt
+checkpoints/*.pth
+checkpoints/*.pt
 
 # Keep checkpoints folder but ignore model files
 !checkpoints/.gitkeep
