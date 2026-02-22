@@ -27,7 +27,7 @@ checkpoints/*.pth
 checkpoints/*.pt
 
 # Keep checkpoints folder but ignore model files
-!checkpoints/.gitkeep
+checkpoints/
 
 # Logs
 logs/
@@ -41,7 +41,3 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
-
-.gitattributes
-
-.huggingface/
