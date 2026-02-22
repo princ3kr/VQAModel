@@ -1,3 +1,4 @@
+import os
 import torch
 import pandas as pd
 import numpy as np
@@ -9,12 +10,15 @@ import yaml
 import json
 import PIL.Image as Image
 from huggingface_hub import hf_hub_download
+from huggingface_hub import RepositoryNotFoundError as HFRepoNotFoundError
 
 from models.vqa_model import VQAModel
 
-# Hugging Face model repository - use namespace/repo_name only (no /tree/main)
+# Hugging Face model repository (create at https://huggingface.co/new and upload best_model.pth)
 HF_REPO_ID = "princ3kr/VQAmodel"
 MODEL_FILENAME = "best_model.pth"
+# Optional: local path or URL fallback when HF repo doesn't exist yet
+LOCAL_MODEL_PATH = "checkpoints/best_model.pth"
 
 @st.cache_data
 def load_config(config_path):
@@ -29,15 +33,38 @@ def load_vocab(vocab_path):
     idx_to_ans = {v: k for k , v in vocab.items()}
     return idx_to_ans
 
+def _get_model_path():
+    """Get model path: try Hugging Face first, then local fallback."""
+    # 1) Try Hugging Face Hub
+    try:
+        path = hf_hub_download(
+            repo_id=HF_REPO_ID,
+            filename=MODEL_FILENAME,
+            revision="main",
+        )
+        return path
+    except HFRepoNotFoundError:
+        pass  # Repo doesn't exist on HF yet
+    except Exception:
+        pass  # Network / auth / other HF errors → try local
+    # 2) Local fallback (e.g. when running locally or repo not created yet)
+    if os.path.isfile(LOCAL_MODEL_PATH):
+        return LOCAL_MODEL_PATH
+    # 3) Not found: show clear instructions
+    st.error(
+        "**Model not found.** The Hugging Face repo does not exist or is not accessible. "
+        "To fix this:\n\n"
+        "1. Create a repo at [huggingface.co/new](https://huggingface.co/new) (e.g. name: `VQAmodel`).\n"
+        "2. Upload `best_model.pth` to the repo root.\n"
+        "3. Set `HF_REPO_ID` in this app to `your_username/VQAmodel`.\n\n"
+        "If you run locally, you can also place `best_model.pth` in `checkpoints/` and restart the app."
+    )
+    st.stop()
+
 @st.cache_resource
 def download_model_from_hf():
-    """Download model from Hugging Face Hub"""
-    model_path = hf_hub_download(
-        repo_id=HF_REPO_ID,
-        filename=MODEL_FILENAME,
-        revision="main",  # branch/tag; use "main" for default branch
-    )
-    return model_path
+    """Download or resolve model path (HF Hub or local fallback)."""
+    return _get_model_path()
 
 @st.cache_resource
 def load_model(config):
