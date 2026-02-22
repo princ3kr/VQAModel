@@ -12,8 +12,8 @@ from huggingface_hub import hf_hub_download
 
 from models.vqa_model import VQAModel
 
-# Hugging Face model repository - update this with your repo
-HF_REPO_ID = "princ3kr/VQAmodel/tree/main"
+# Hugging Face model repository - use namespace/repo_name only (no /tree/main)
+HF_REPO_ID = "princ3kr/VQAmodel"
 MODEL_FILENAME = "best_model.pth"
 
 @st.cache_data
@@ -32,7 +32,11 @@ def load_vocab(vocab_path):
 @st.cache_resource
 def download_model_from_hf():
     """Download model from Hugging Face Hub"""
-    model_path = hf_hub_download(repo_id=HF_REPO_ID, filename=MODEL_FILENAME)
+    model_path = hf_hub_download(
+        repo_id=HF_REPO_ID,
+        filename=MODEL_FILENAME,
+        revision="main",  # branch/tag; use "main" for default branch
+    )
     return model_path
 
 @st.cache_resource
@@ -73,9 +77,13 @@ def main():
     st.write("This is a VQA model that can answer questions about images.")
 
     config = load_config('configs/default_config.yaml')
+    print("config loaded")
     model, device = load_model(config)
+    print("model loaded")
     idx_to_ans = load_vocab(config['data']['answer_vocab_path'])
+    print("idx_to_ans loaded")
     tokenizer = load_tokenizer(config['model']['text_encoder']['model_name'])
+    print("tokenizer loaded")
 
     col1, col2 = st.columns(2)
 
