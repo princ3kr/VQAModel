@@ -15,7 +15,7 @@ training:
   epochs: 10
   learning_rate: 0.0001
   pin_memory: true
-  no_of_workers: 0
+  no_of_workers: 8
   save_dir: "checkpoints/"
 
 data:

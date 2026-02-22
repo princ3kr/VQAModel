@@ -13,7 +13,7 @@ from huggingface_hub import hf_hub_download
 from models.vqa_model import VQAModel
 
 # Hugging Face model repository - update this with your repo
-HF_REPO_ID = "princ3kr/vqa-model"
+HF_REPO_ID = "princ3kr/VQAmodel/tree/main"
 MODEL_FILENAME = "best_model.pth"
 
 @st.cache_data
